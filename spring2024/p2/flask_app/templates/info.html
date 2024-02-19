@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{{ info['id'] }}.png"/>
+    <h2>name: {{ info['name'] }}</h2>
+    <h2>height: {{ info['height'] }}</h2>
+    <h2>weight: {{ info['weight'] }}</h2>
+    <h2>base exp: {{ info['base_exp'] }}</h2>
+    <h2>moves: </h2>
+    <ul>
+        {% for move in info['moves'] %}
+            <li>{{move}}</li>
+        {% endfor %}
+    </ul>
+    <h2>abilities:</h2>
+    <ul>
+        {% for ability in info['abilities'] %}
+            <li>
+                <a href="{{ url_for('pokemon_with_ability', ability_name=ability) }}">{{ability}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

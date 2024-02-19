@@ -10,6 +10,10 @@
     <title>Poke-Info</title>
   </head>
   <body>
+    <div id="homepage-link" style="position: absolute; top: 20; left: 20;">
+      <a href="{{ url_for('index') }}">home</a>
+    </div>
+    
     {% block content %}{% endblock %}
   </body>
 </html>

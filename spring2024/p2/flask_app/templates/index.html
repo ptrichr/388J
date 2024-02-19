@@ -1,4 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<b>Poke-Info website!</b>
+    <div class="container" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px;">
+        {% for pokemon in info %}
+        <div class="box" style="margin: 10px">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon[1] }}.png"/>
+            <a href="{{ url_for('pokemon_info', pokemon_name=pokemon[0]) }}">{{ pokemon[0] }}</a>
+        </div>
+        {% endfor %}
+    </div>
+    
 {% endblock %}

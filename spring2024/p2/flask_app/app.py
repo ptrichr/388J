@@ -6,27 +6,15 @@ poke_client = PokeClient()
 
 @app.route('/')
 def index():
-    """
-    Must show all of the pokemon names as clickable links
+    names_ids = zip(poke_client.get_pokemon_list(), poke_client.get_pokemon_ids())
+    return render_template('index.html', info=names_ids)
 
-    Check the README for more detail.
-    """
-    return render_template('index.html')
-
-@app.route()
+@app.route('/pokemon/<pokemon_name>')
 def pokemon_info(pokemon_name):
-    """
-    Must show all the info for a pokemon identified by name
+    info = poke_client.get_pokemon_info(pokemon=pokemon_name)
+    return render_template('info.html', info=info)
 
-    Check the README for more detail
-    """
-    pass
-
-@app.route()
+@app.route('/ability/<ability_name>')
 def pokemon_with_ability(ability_name):
-    """
-    Must show a list of pokemon 
-
-    Check the README for more detail
-    """
-    pass
+    info = poke_client.get_pokemon_with_ability(ability=ability_name)
+    return render_template('ability.html', info=info)
