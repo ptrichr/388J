@@ -1,6 +1,4 @@
-# CMSC388J: Building Secure Web Applications
+# [CMSC388J: Building Secure Web Applications](https://aspear.cs.umd.edu)
 ### (Spring 2024)
-
-## [Class page: https://aspear.cs.umd.edu/388j](https://aspear.cs.umd.edu)
 
 Projects written for CMSC388J by me, Nathan Ho.
