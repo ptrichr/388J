@@ -14,9 +14,9 @@ from flask_app.model import MovieClient
 app = Flask(__name__)
 
 # TODO: you should fill out these with the appropriate values
-app.config['MONGO_URI'] = '' 
-app.config['SECRET_KEY'] = ''
-OMDB_API_KEY = '' 
+app.config['MONGO_URI'] = 'mongodb+srv://petrichor:QpssdcS6BuHsIKsV@388j.lvoyrb1.mongodb.net/388J?retryWrites=true&w=majority' 
+app.config['SECRET_KEY'] = b';\xe1\xce\x00A\x8e_g\x88I"\xab\'\xce\x06\xb9'
+OMDB_API_KEY = '30a9894d' 
 
 # DO NOT REMOVE OR MODIFY THESE 4 LINES (required for autograder to work)
 if os.getenv('MONGO_URI'):
@@ -47,11 +47,35 @@ def index():
 
 @app.route('/search-results/<query>', methods=['GET'])
 def query_results(query):
-    return 'Query'
+    return render_template('query_results.html', results=movie_client.search(query))
+    # try:
+    # except ValueError:
+        # form = SearchForm()
+        # errors no work!!!
+        # form.search_query.errors = ('[ERROR]: Error retrieving results: \'Movie not found!\'')
+        # return render_template('query_results.html', form=form)
 
 @app.route('/movies/<movie_id>', methods=['GET', 'POST'])
 def movie_detail(movie_id):
-    return 'movie_detail'
+    form = MovieReviewForm()
+    # reviews = the mongo database
+    
+    if form.validate_on_submit():
+        review = {
+            'imdb_id': movie_id,
+            'commenter': form.name.data,
+            'content': form.text.data,
+            'date': current_time()
+        }
+        # insert into mongo
+        mongo.db.p3_reviews.insert_one(review)
+        
+    # need errors!!
+    
+    return render_template('movie_detail.html', 
+                           movie=movie_client.retrieve_movie_by_id(movie_id), 
+                           form=form, 
+                           reviews=list(mongo.db.p3_reviews.find()))
 
 # Not a view function, used for creating a string for the current time.
 def current_time() -> str:
