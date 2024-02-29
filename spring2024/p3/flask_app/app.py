@@ -47,19 +47,20 @@ def index():
 
 @app.route('/search-results/<query>', methods=['GET'])
 def query_results(query):
-    return render_template('query_results.html', results=movie_client.search(query))
-    # try:
-    # except ValueError:
-        # form = SearchForm()
-        # errors no work!!!
-        # form.search_query.errors = ('[ERROR]: Error retrieving results: \'Movie not found!\'')
-        # return render_template('query_results.html', form=form)
-
+    try:
+        res = movie_client.search(query)
+        return render_template('query_results.html', results=res)
+    except ValueError as e:
+        return render_template('query_results.html', error_msg=e)
 @app.route('/movies/<movie_id>', methods=['GET', 'POST'])
 def movie_detail(movie_id):
-    form = MovieReviewForm()
-    # reviews = the mongo database
+    try:
+        movie_data = movie_client.retrieve_movie_by_id(movie_id)
+    except ValueError as e:
+        return render_template("movie_detail.html", error_msg=e)
     
+    form = MovieReviewForm()
+    # p3_reviews is the mongo database collection
     if form.validate_on_submit():
         review = {
             'imdb_id': movie_id,
@@ -68,14 +69,15 @@ def movie_detail(movie_id):
             'date': current_time()
         }
         # insert into mongo
-        mongo.db.p3_reviews.insert_one(review)
+        mongo.db.reviews.insert_one(review)
+        return redirect(url_for('movie_detail', movie_id=movie_id))
         
-    # need errors!!
-    
+    reviews_from_db = list(mongo.db.reviews.find({'imdb_id': movie_id}))
+            
     return render_template('movie_detail.html', 
-                           movie=movie_client.retrieve_movie_by_id(movie_id), 
+                           movie=movie_data, 
                            form=form, 
-                           reviews=list(mongo.db.p3_reviews.find()))
+                           reviews=reviews_from_db)
 
 # Not a view function, used for creating a string for the current time.
 def current_time() -> str:
