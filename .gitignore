@@ -8,6 +8,7 @@ htmlcov/
 docs/_build/
 dist/
 venv/
+spring2024/zipped-projects
 .DS_Store
 
 
