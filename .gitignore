@@ -8,7 +8,7 @@ htmlcov/
 docs/_build/
 dist/
 venv/
-spring2024/zipped-projects
+spring2024/week*
 .DS_Store
 
 
