@@ -52,6 +52,7 @@ def query_results(query):
         return render_template('query_results.html', results=res)
     except ValueError as e:
         return render_template('query_results.html', error_msg=e)
+
 @app.route('/movies/<movie_id>', methods=['GET', 'POST'])
 def movie_detail(movie_id):
     try:

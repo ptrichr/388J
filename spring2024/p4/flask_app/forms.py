@@ -54,21 +54,24 @@ class RegistrationForm(FlaskForm):
 
 # TODO: implement fields
 class LoginForm(FlaskForm):
-    username = None
-    password = None
-    submit = None
+    username = StringField("Username", validators=[InputRequired(), Length(min=1, max=40)])
+    password = PasswordField("Password", validators=[InputRequired()])
+    submit = SubmitField("Submit")
 
 
 # TODO: implement
 class UpdateUsernameForm(FlaskForm):
-    username = None
-    submit_username = None 
+    username = StringField("New Username", validators=[InputRequired(), Length(min=1, max=40)])
+    submit_username = SubmitField("Submit") 
 
     # TODO: implement
     def validate_username(self, username):
-        pass
+        user = User.objects(username=username.data).first()
+        if user is not None:
+            raise ValidationError("This username is taken. Pick another username")
 
 # TODO: implement
 class UpdateProfilePicForm(FlaskForm):
-    picture = None
-    submit_picture = None
+    picture = FileField("Upload File (jpg or png only)", 
+                        validators=[FileRequired(), FileAllowed(['png', 'jpg'])])
+    submit_picture = SubmitField("Upload")

@@ -50,6 +50,7 @@ def movie_detail(movie_id):
     if form.validate_on_submit():
         review = Review(
             commenter=current_user._get_current_object(),
+            image=current_user.profile_pic.get(),
             content=form.text.data,
             date=current_time(),
             imdb_id=movie_id,
@@ -69,7 +70,11 @@ def movie_detail(movie_id):
 
 @movies.route("/user/<username>")
 def user_detail(username):
-    #uncomment to get review image
-    #user = find first match in db
-    #img = get_b64_img(user.username) use their username for helper function
-    return "user_detail"
+    user = User.objects(username=username).first()
+    img = get_b64_img(user.username)
+    reviews = list(Review.objects(commenter=user))
+    
+    return render_template('user_detail.html', 
+                           image=img, 
+                           user=user.username, 
+                           reviews=reviews)

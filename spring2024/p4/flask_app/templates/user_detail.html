@@ -8,10 +8,22 @@
     {# User's Profile Picture #}
     <img class="rounded-2xl" src="data:image/png;base64,{{image}}" alt="image">
     {# TODO: Indicate which user's reviews we're looking at #}
-
+    <p class="main-title"> {{ user }} </p>
 </div>
 <div class="container mx-auto w-full md:w-2/3 lg:w-1/3">
     {# TODO: Show all reviews made by the user #}
-
+    {% for review in reviews %}
+        <li class="review flex gap-2">
+            <img class="h-20 w-20 rounded-lg" src="data:image/png;base64,{{review.image}}" alt="" />
+                <div class="w-full">
+                    <span class="review-date">{{ review.date }}</span>
+                    <a  class="review-commenter"
+                        href="{{ url_for('movies.user_detail', username=review.commenter.username) }}">
+                        @{{ review.commenter.username }}
+                    </a>
+                <p class="review-content">{{ review.content }}</p>
+            </div>
+        </li>
+    {% endfor %}
 </div>
 {% endblock %}
