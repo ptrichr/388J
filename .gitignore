@@ -8,6 +8,7 @@ htmlcov/
 docs/_build/
 dist/
 venv/
+fall2023
 spring2024/week*
 .DS_Store
 
