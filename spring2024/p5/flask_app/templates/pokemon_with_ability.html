@@ -1,16 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
 <!-- TODO STYLES HERE -->
-<div>
-    <a href="{{ url_for('index') }}">Home</a>
+<!-- home button container -->
+<div class="flex flex-col pt-4">
+    <div class="fixed left-0 w-full">
+        <div class="sticky top-4 flex flex-row p-2 bg-neutral-500/30 w-fit right-1/2 h-10 box-content border-4 border-neutral-500/30 rounded-2xl z-10 scale-75">
+            <!-- home button -->
+            <a class="flex flex-row bg-clip-text font-sans text-3xl font-bold" href="{{ url_for('index') }}">
+                <img class="w-10 h-10 pt-0.5" src="{{ url_for('static', filename='assets/pixelpokeball.png') }}">
+                Home
+            </a>
+        </div>
+    </div>
+    <p class="mt-20 font-sans font-bold text-2xl text-center capitalize">
+        Pokemon With {{ ability_name }}:
+    </p>
+    <input id="pokesearch" class="mx-auto mt-4 rounded-3xl w-11/12 text-center bg-neutral-900/40 border-2 border-dashed border-neutral-800 border-opacity-60" placeholder="Search Pokemon" type="text">
+    <div id="pokemoncontainer" class="grid grid-cols-3 basis-5 gap-x-6 gap-y-5 justify-center mt-4">
+        {% for pokemon, id in pokemon_list.items() %}
+            <div id="pokemon" class="flex items-center bg-neutral-400/25 w-40 h-48 rounded-lg justify-center hover:scale-105 hover:duration-200 transition ease-in-out delay-50"> 
+                <a href="{{ url_for('pokemon_info', pokemon_name=pokemon) }}">
+                    <div class="mx-auto flex flex-col w-36 h-36 rounded-lg bg-neutral-800">
+                        <img class="justify-center w-36 h-36"
+                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ id }}.png">
+                    </div>
+                    <p class="text-center font-sans text-xl font-semibold tracking-wide capitalize pt-1">
+                        {{ pokemon }}
+                    </p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        const search = document.getElementById("pokesearch");
+        const elements = document.getElementById("pokemoncontainer").querySelectorAll("[id=pokemon]");
+
+        search.addEventListener("input", (e) => {
+            const searchValue = e.target.value.toLowerCase();
+            elements.forEach((element) => {
+                if (element.textContent.toLowerCase().includes(searchValue)) {
+                    element.style.display = "flex";
+                } else {
+                    element.style.display = "none";
+                }
+            });
+        });
+    </script>
 </div>
-<b>Pokemon With Ability {{ ability_name }}:</b>
-<ol>
-    {% for pokemon,id in pokemon_list.items() %}
-    <li>
-        <a href="{{ url_for('pokemon_info', pokemon_name=pokemon) }}">{{ pokemon }}</a>
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ id }}.png" />
-    </li>
-    {% endfor %}
-</ol>
 {% endblock %}

@@ -1,50 +1,84 @@
 {% extends "base.html" %}
 {% block content %}
 <!-- TODO STYLES HERE -->
-<div>
-    <a href="{{ url_for('index') }}">Home</a>
-</div>
-<h1>Info for {{ pokemon_name }}</h1>
-<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{{info['id']}}.png"
-    height=500px width=400px />
-<table>
-    <tr>
-        <td><b>Name</b></td>
-        <td>{{ info["name"] }}</td>
-    </tr>
-    <tr>
-        <td><b>Height</b></td>
-        <td>{{ info["height"] }}</td>
-    </tr>
-    <tr>
-        <td><b>Weight</b></td>
-        <td>{{ info["weight"] }}</td>
-    </tr>
-    <tr>
-        <td><b>Base XP</b></td>
-        <td>{{ info["base_exp"] }}</td>
-    </tr>
-    <tr style="vertical-align: top">
-        <td><b>Moves</b></td>
-        <td>
-            <ol>
+
+<!-- ask why there is more scroll -->
+<div class="flex flex-col pt-4">
+    <!-- container for home button -->
+    <div class="fixed left-0 w-full">
+        <div class="sticky top-4 flex flex-row p-2 bg-neutral-500/30 w-fit right-1/2 h-10 box-content border-4 border-neutral-500/30 rounded-2xl z-10 scale-75">
+            <!-- home button -->
+            <a class="flex flex-row bg-clip-text font-sans text-3xl font-bold" href="{{ url_for('index') }}">
+                <img class="w-10 h-10 pt-0.5" src="{{ url_for('static', filename='assets/pixelpokeball.png') }}">
+                Home
+            </a>
+        </div>
+    </div>
+    <!-- blurred pixel art background -->
+    <img class="fixed top-0 left-0 blur-lg -z-10 opacity-20" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ info['id'] }}.png" height="100%" width="100%"/>
+    <!-- info container -->
+    <div class="mx-auto p-6 mt-20 rounded-3xl overflow-hidden bg-neutral-500/20 box-content border-4 border-double border-neutral-700/55">
+        <!-- name -->
+        <h1 class="font-sans text-2xl capitalize font-semibold">{{ info["name"] }}</h1>
+        <!-- image -->
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{{ info['id'] }}.png" height=500px width=400px/>
+        <!-- physical stats -->
+        <div class="mx-auto grid grid-cols-3">
+            <p class="ml-1.5 mr-1.5 font-sans text-lg capitlize bg-neutral-900/40 w-28 rounded-2xl box-content p-2 border-4 border-double border-neutral-600 text-center">
+                <b>Height</b> {{ info["height"] }}
+            </p>
+            <p class="mx-auto font-sans text-lg capitlize bg-neutral-900/40 w-28 rounded-2xl box-content p-2 border-4 border-double border-neutral-600 text-center">
+                <b>Weight</b> {{ info["weight"] }}
+            </p>
+            <p class="mx-auto font-sans text-lg capitlize bg-neutral-900/40 w-28 rounded-2xl box-content p-2 border-4 border-double border-neutral-600 text-center">
+                <b>Base XP</b> {{ info["base_exp"] }}
+            </p>
+        </div>
+        <!-- moveset -->
+        <div class="flex flex-col mx-auto mt-10 p-1 pb-1 w-[95%] bg-neutral-900/40 rounded-2xl box-content border-4 border-double border-neutral-600">
+            <div class="grid grid-cols-3 mx-auto w-full pt-2 pb-2 mt-1 bg-neutral-300/30 rounded-2xl">
+                <p class="text-center font-sans font-semibold text-xl"> Moveset </p>
+                <input id="movesearch" class="mx-auto rounded-3xl col-span-2 w-11/12 text-center bg-neutral-900/40 border-2 border-dashed border-neutral-800 border-opacity-60" placeholder="Search Move" type="text">
+            </div>
+            <div id="movecontainer" class="grid grid-cols-3 mt-2">
                 {% for move in info["moves"] %}
-                <li>{{ move }}</li>
+                <div id="move" class="mt-1 ml-2 mr-2 mb-1 p-2 w-32 h-10 rounded-3xl bg-neutral-500/10">
+                    <p class="text-center text-sm">
+                        {{ move }}
+                    </p>
+                </div>
                 {% endfor %}
-            </ol>
-        </td>
-    </tr>
-    <tr style="vertical-align: top">
-        <td><b>Abilities</b></td>
-        <td>
-            <ol>
+            </div>
+        </div>
+        <!-- abilities -->
+        <div class="flex flex-col mx-auto mt-10 p-1 pb-1 w-[95%] bg-neutral-900/40 rounded-2xl box-content border-4 border-double border-neutral-600">
+            <div class="grid grid-cols-3 mx-auto w-full pt-2 pb-2 mt-1 bg-neutral-300/30 rounded-2xl">
+                <p class="text-center font-sans font-semibold text-xl"> Abilities </p>
+            </div>
+            <div class="grid grid-cols-3 mt-2">
                 {% for ability in info["abilities"] %}
-                <li>
-                    <a href="{{ url_for('pokemon_with_ability', ability_name=ability) }}">{{ ability }}</a>
-                </li>
+                <a id="moves" class="mt-1 ml-2 mr-2 mb-1 p-2 w-32 h-10 rounded-3xl bg-neutral-500/10 text-center text-sm" href="{{ url_for('pokemon_with_ability', ability_name=ability) }}">
+                    {{ ability }}
+                </a>
                 {% endfor %}
-            </ol>
-        </td>
-    </tr>
-</table>
+            </div>
+        </div>
+    </div>
+    <!-- search by move name -->
+    <script>
+        const search = document.getElementById("movesearch");
+        const elements = document.getElementById("movecontainer").querySelectorAll("[id=move]");
+
+        search.addEventListener("input", (e) => {
+            const searchValue = e.target.value.toLowerCase();
+            elements.forEach((element) => {
+                if (!element.textContent.toLowerCase().includes(searchValue)) {
+                    element.style.filter = "blur(2px)";
+                } else {
+                    element.style.filter = "blur(0px)";
+                }
+            });
+        });
+    </script>
+</div>
 {% endblock %}
